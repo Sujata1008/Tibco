@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/schemas/ProjectZero/Resources/Schemas/Comment/Header" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/ListReadFileRequest" xmlns:ns2="http://www.tibco.com/schemas/ProjectZero/Resources/Schemas/Models/Context">
+    <pd:name>Tests/TestList&amp;ReadFiles.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>180</pd:startX>
+    <pd:startY>102</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>623</pd:endX>
+    <pd:endY>106</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1700740963238</pd:targetNamespace>
+    <pd:activity name="List&amp;ReadFiles">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>376</pd:x>
+        <pd:y>105</pd:y>
+        <config>
+            <processName>/Processes/Services/SharedProcesses/List&amp;ReadFiles.process</processName>
+        </config>
+        <pd:inputBindings>
+            <ns:ListReadFileRequest>
+                <pfx:Header>
+                    <ns2:Context>
+                        <ns2:correlationId>
+                            <xsl:value-of select="'123456'"/>
+                        </ns2:correlationId>
+                        <ns2:parentCorrelationId>
+                            <xsl:value-of select="'12'"/>
+                        </ns2:parentCorrelationId>
+                    </ns2:Context>
+                    <pfx:timestamp>
+                        <xsl:value-of select="current-dateTime()"/>
+                    </pfx:timestamp>
+                </pfx:Header>
+                <ns:Body>
+                    <ns:sourcePath>
+                        <xsl:value-of select="'C:\Users\sujatanaik\Desktop\Tibco_udemy_bw\Files\Input\'"/>
+                    </ns:sourcePath>
+                    <ns:sourceFilePattern>
+                        <xsl:value-of select="'*'"/>
+                    </ns:sourceFilePattern>
+                </ns:Body>
+            </ns:ListReadFileRequest>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>List&amp;ReadFiles</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>List&amp;ReadFiles</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
