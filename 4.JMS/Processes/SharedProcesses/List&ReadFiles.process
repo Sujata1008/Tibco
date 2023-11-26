@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/ListReadFileRequest" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:pfx2="http://www.tibco.com/schemas/2ParseReaderXML/Resources/Schemas/Services/ListReadFileResonce" xmlns:ns02="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/CopyFileRequest" xmlns:ns="http://www.tibco.com/schemas/ProjectZero/Resources/Schemas/Comment/Header" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns0="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/MoveFileRequest" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns3="http://www.tibco.com/schemas/ProjectZero/Resources/Schemas/Commons/Responce">
+    <xsd:import namespace="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/ListReadFileRequest" schemaLocation="/Resources/Schemas/Services/List&amp;ReadFileRequest.xsd"/>
+    <xsd:import namespace="http://www.tibco.com/schemas/2ParseReaderXML/Resources/Schemas/Services/ListReadFileResonce" schemaLocation="/Resources/Schemas/Services/List&amp;ReadFileResonce.xsd"/>
+    <pd:name>Processes/SharedProcesses/List&amp;ReadFiles.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx:ListReadFileRequest"/>
+    <pd:startX>37</pd:startX>
+    <pd:startY>290</pd:startY>
+    <pd:returnBindings>
+        <pfx2:ListReadFileResonce>
+            <xsl:copy-of select="$Start/pfx:ListReadFileRequest/ns:Header"/>
+            <pfx2:Body>
+                <ns3:Responce>
+                    <ns3:message>
+                        <xsl:value-of select="'File .txt have been extracted'"/>
+                    </ns3:message>
+                    <ns3:resoinceStatus>
+                        <xsl:value-of select="'SUCCESS'"/>
+                    </ns3:resoinceStatus>
+                    <ns3:data>
+                        <xsl:copy-of select="$Map-.txt-files/Files"/>
+                    </ns3:data>
+                </ns3:Responce>
+            </pfx2:Body>
+        </pfx2:ListReadFileResonce>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType ref="pfx2:ListReadFileResonce"/>
+    <pd:endX>1030</pd:endX>
+    <pd:endY>264</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1700738431321</pd:targetNamespace>
+    <pd:activity name="List Files">
+        <pd:type>com.tibco.plugin.file.ListFilesActivity</pd:type>
+        <pd:resourceType>ae.activities.ListFilesActivity</pd:resourceType>
+        <pd:x>131</pd:x>
+        <pd:y>201</pd:y>
+        <config>
+            <mode>only-files</mode>
+        </config>
+        <pd:inputBindings>
+            <ns2:ListFilesActivityConfig>
+                <fileName>
+                    <xsl:value-of select="concat($Start/pfx:ListReadFileRequest/pfx:Body/pfx:source/pfx:sourcePath,$Start/pfx:ListReadFileRequest/pfx:Body/pfx:source/pfx:sourceFilePattern)"/>
+                </fileName>
+            </ns2:ListFilesActivityConfig>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Map .txt files">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>211</pd:x>
+        <pd:y>280</pd:y>
+        <config>
+            <element>
+                <xsd:element name="Files">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="fileinfo" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="fullName" type="xsd:string"/>
+                                        <xsd:element name="fileName" type="xsd:string"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <Files>
+                <xsl:for-each select="$List-Files/ns2:ListFilesActivityOutput/files/fileInfo[contains(fileName,'.txt') and starts-with(fileName,'file_')]">
+                    <fileinfo>
+                        <fullName>
+                            <xsl:value-of select="fullName"/>
+                        </fullName>
+                        <fileName>
+                            <xsl:value-of select="fileName"/>
+                        </fileName>
+                    </fileinfo>
+                </xsl:for-each>
+            </Files>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Group">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>301</pd:x>
+        <pd:y>22</pd:y>
+        <pd:width>617</pd:width>
+        <pd:height>476</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>inputLoop</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:over>$Map-.txt-files/Files/fileinfo</pd:over>
+            <pd:iterationElementSlot>currentFile</pd:iterationElementSlot>
+            <pd:indexSlot>Index</pd:indexSlot>
+            <pd:activityOutputName/>
+            <pd:accumulateOutput>false</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>Read File</pd:to>
+            <pd:lineType>Straight</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Do nothing</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>One Bend</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>RemoveFiles</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Multiple Bends</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>MoveFiles</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Read File</pd:from>
+            <pd:to>Copyfiles</pd:to>
+            <pd:xpathDescription>file content equal 1</pd:xpathDescription>
+            <pd:lineType>Multiple Bends</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>$Read-File/ns2:ReadActivityOutputTextClass/fileContent/textContent ='1'</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Read File</pd:from>
+            <pd:to>MoveFiles</pd:to>
+            <pd:xpathDescription>file content equal 2</pd:xpathDescription>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>$Read-File/ns2:ReadActivityOutputTextClass/fileContent/textContent = '2'</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Read File</pd:from>
+            <pd:to>Do nothing</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Copyfiles</pd:from>
+            <pd:to>RemoveFiles</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="Read File">
+            <pd:type>com.tibco.plugin.file.FileReadActivity</pd:type>
+            <pd:resourceType>ae.activities.FileReadActivity</pd:resourceType>
+            <pd:x>391</pd:x>
+            <pd:y>264</pd:y>
+            <config>
+                <encoding>text</encoding>
+            </config>
+            <pd:inputBindings>
+                <ns0:ReadActivityInputClass xmlns:ns0="http://www.tibco.com/namespaces/tnt/plugins/file/v2">
+                    <fileName>
+                        <xsl:value-of select="$currentFile/fileinfo/fullName"/>
+                    </fileName>
+                </ns0:ReadActivityInputClass>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Copyfiles">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>612</pd:x>
+            <pd:y>132</pd:y>
+            <config>
+                <processName>/Processes/SharedProcesses/Copyfiles.process</processName>
+            </config>
+            <pd:inputBindings>
+                <ns02:CopyFileRequest>
+                    <xsl:copy-of select="$Start/pfx:ListReadFileRequest/ns:Header"/>
+                    <ns02:Body>
+                        <ns02:Source>
+                            <ns02:sourceDirectoryPath>
+                                <xsl:value-of select="$Start/pfx:ListReadFileRequest/pfx:Body/pfx:source/pfx:sourcePath"/>
+                            </ns02:sourceDirectoryPath>
+                            <ns02:sourceFileName>
+                                <xsl:value-of select="$currentFile/fileinfo/fileName"/>
+                            </ns02:sourceFileName>
+                        </ns02:Source>
+                        <ns02:targer>
+                            <ns02:targetDirectoryPath>
+                                <xsl:value-of select="$Start/pfx:ListReadFileRequest/pfx:Body/pfx:target/pfx:targetPath"/>
+                            </ns02:targetDirectoryPath>
+                            <ns02:targetFileName>
+                                <xsl:value-of select="concat('final_',$currentFile/fileinfo/fileName)"/>
+                            </ns02:targetFileName>
+                        </ns02:targer>
+                    </ns02:Body>
+                </ns02:CopyFileRequest>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="MoveFiles">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>647</pd:x>
+            <pd:y>266</pd:y>
+            <config>
+                <processName>/Processes/SharedProcesses/MoveFiles.process</processName>
+            </config>
+            <pd:inputBindings>
+                <ns0:MoveFileRequest>
+                    <xsl:copy-of select="$Start/pfx:ListReadFileRequest/ns:Header"/>
+                    <ns0:Body>
+                        <ns0:Source>
+                            <ns0:sourceDirectoryPath>
+                                <xsl:value-of select="$Start/pfx:ListReadFileRequest/pfx:Body/pfx:source/pfx:sourcePath"/>
+                            </ns0:sourceDirectoryPath>
+                            <ns0:sourceFileName>
+                                <xsl:value-of select="$currentFile/fileinfo/fileName"/>
+                            </ns0:sourceFileName>
+                        </ns0:Source>
+                        <ns0:targer>
+                            <ns0:targetDirectoryPath>
+                                <xsl:value-of select="$Start/pfx:ListReadFileRequest/pfx:Body/pfx:target/pfx:targetPath"/>
+                            </ns0:targetDirectoryPath>
+                            <ns0:targetFileName>
+                                <xsl:value-of select="$currentFile/fileinfo/fileName"/>
+                            </ns0:targetFileName>
+                        </ns0:targer>
+                    </ns0:Body>
+                </ns0:MoveFileRequest>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Do nothing">
+            <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+            <pd:resourceType>ae.activities.null</pd:resourceType>
+            <pd:x>401</pd:x>
+            <pd:y>414</pd:y>
+            <config/>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:activity name="RemoveFiles">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>757</pd:x>
+            <pd:y>139</pd:y>
+            <config>
+                <processName>/Processes/SharedProcesses/RemoveFiles.process</processName>
+            </config>
+            <pd:inputBindings>
+                <ns0:RemoveFileRequest xmlns:ns0="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/RemoveFileRequest">
+                    <xsl:copy-of select="$Start/pfx:ListReadFileRequest/ns:Header"/>
+                    <ns0:Body>
+                        <ns0:Source>
+                            <ns0:sourceDirectoryPath>
+                                <xsl:value-of select="$Start/pfx:ListReadFileRequest/pfx:Body/pfx:source/pfx:sourcePath"/>
+                            </ns0:sourceDirectoryPath>
+                            <ns0:sourceFileName>
+                                <xsl:value-of select="$currentFile/fileinfo/fileName"/>
+                            </ns0:sourceFileName>
+                        </ns0:Source>
+                    </ns0:Body>
+                </ns0:RemoveFileRequest>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>List Files</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>List Files</pd:from>
+        <pd:to>Map .txt files</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Map .txt files</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
