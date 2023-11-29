@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 xmlns:RemoveFileRequest="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/RemoveFileRequest"
+	 xmlns:Header="http://www.tibco.com/schemas/ProjectZero/Resources/Schemas/Comment/Header"
+	 targetNamespace="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/RemoveFileRequest"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.tibco.com/schemas/ProjectZero/Resources/Schemas/Comment/Header" schemaLocation="../Commons/Header.xsd"/>
+	<xs:element name="RemoveFileRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Header:Header"/>
+				<xs:element ref="RemoveFileRequest:Body"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Body">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Source">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="sourceDirectoryPath" type="xs:string"/>
+							<xs:element name="sourceFileName" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

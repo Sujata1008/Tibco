@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/schemas/ProjectZero/Resources/Schemas/Comment/Header" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:pfx2="http://www.tibco.com/schemas/2ParseReaderXML/Resources/Schemas/Services/ParseRenderCatalogXMLResponce" xmlns:ns="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/ListReadFileRequest" xmlns:pfx3="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/WriteFileRequest" xmlns:ns2="http://www.tibco.com/schemas/ProjectZero/Resources/Schemas/Models/Context" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:ns4="http://www.tibco.com/schemas/ProjectZero/Resources/Schemas/Commons/Responce" xmlns:ns3="http://www.tibco.com/schemas/2ParseReaderXML/Resources/Schemas/Services/ListReadFileResonce">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/2ParseReaderXML/Resources/Schemas/Services/ParseRenderCatalogXMLResponce" schemaLocation="/Resources/Schemas/Services/WriteFileResponce.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/WriteFileRequest" schemaLocation="/Resources/Schemas/Services/WriteFileRequest.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/ListReadFileRequest" schemaLocation="/Resources/Schemas/Services/List&amp;ReadFileRequest.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/2ParseReaderXML/Resources/Schemas/Services/ListReadFileResonce" schemaLocation="/Resources/Schemas/Services/List&amp;ReadFileResonce.xsd"/>
+    <pd:name>Tests/TestList&amp;ReadFiles.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="ns:ListReadFileRequest"/>
+    <pd:startX>180</pd:startX>
+    <pd:startY>102</pd:startY>
+    <pd:returnBindings>
+        <ns3:ListReadFileResonce>
+            <xsl:copy-of select="$Start/ns:ListReadFileRequest/pfx:Header"/>
+            <ns3:Body>
+                <ns4:Responce>
+                    <ns4:message>
+                        <xsl:value-of select="'process complete'"/>
+                    </ns4:message>
+                    <ns4:resoinceStatus>
+                        <xsl:value-of select="'SUCCESS'"/>
+                    </ns4:resoinceStatus>
+                </ns4:Responce>
+            </ns3:Body>
+        </ns3:ListReadFileResonce>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType ref="ns3:ListReadFileResonce"/>
+    <pd:endX>624</pd:endX>
+    <pd:endY>106</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1700740963238</pd:targetNamespace>
+    <pd:activity name="List&amp;ReadFiles">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>376</pd:x>
+        <pd:y>105</pd:y>
+        <config>
+            <processName>/Processes/Services/SharedProcesses/List&amp;ReadFiles.process</processName>
+        </config>
+        <pd:inputBindings>
+            <ns:ListReadFileRequest>
+                <pfx:Header>
+                    <ns2:Context>
+                        <ns2:correlationId>
+                            <xsl:value-of select="'12345'"/>
+                        </ns2:correlationId>
+                        <ns2:parentCorrelationId>
+                            <xsl:value-of select="'12'"/>
+                        </ns2:parentCorrelationId>
+                    </ns2:Context>
+                    <pfx:timestamp>
+                        <xsl:value-of select="current-dateTime()"/>
+                    </pfx:timestamp>
+                </pfx:Header>
+                <ns:Body>
+                    <ns:source>
+                        <ns:sourcePath>
+                            <xsl:value-of select="$Start/ns:ListReadFileRequest/ns:Body/ns:source/ns:sourcePath"/>
+                        </ns:sourcePath>
+                        <ns:sourceFilePattern>
+                            <xsl:value-of select="$Start/ns:ListReadFileRequest/ns:Body/ns:source/ns:sourceFilePattern"/>
+                        </ns:sourceFilePattern>
+                    </ns:source>
+                    <ns:target>
+                        <ns:targetPath>
+                            <xsl:value-of select="$Start/ns:ListReadFileRequest/ns:Body/ns:target/ns:targetPath"/>
+                        </ns:targetPath>
+                    </ns:target>
+                </ns:Body>
+            </ns:ListReadFileRequest>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>List&amp;ReadFiles</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>List&amp;ReadFiles</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

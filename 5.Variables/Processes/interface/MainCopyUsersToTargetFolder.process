@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/schemas/4.JMS/Resources/Schemas/orchestration/CopyUser2ToTargetFolderRequest" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:pfx2="http://www.tibco.com/schemas/4.JMS/Resources/Schemas/orchestration/CopyUser2ToTargetFOlderResponce" xmlns:ns="http://www.tibco.com/schemas/ProjectZero/Resources/Schemas/Comment/Header" xmlns:pfx3="http://www.tibco.com/schemas/4.JMS/Resources/Schemas/orchestration/CopyUser2ToTargetFolderResponce" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/CopyFileRequest" xmlns:ns1="http://www.tibco.com/schemas/3.files/Resources/Schemas/Services/CpoyFileResponce">
+    <xsd:import namespace="http://www.tibco.com/schemas/4.JMS/Resources/Schemas/orchestration/CopyUser2ToTargetFolderRequest" schemaLocation="/Resources/Schemas/orchestration/CopyUser2ToTargetFolderRequest.xsd"/>
+    <xsd:import namespace="http://www.tibco.com/schemas/4.JMS/Resources/Schemas/orchestration/CopyUser2ToTargetFolderResponce" schemaLocation="/Resources/Schemas/orchestration/CopyUser2ToTargetFOlderResponce.xsd"/>
+    <pd:name>Processes/interface/MainCopyUsersToTargetFolder.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx:CopyUser2ToTargetFolderRequest"/>
+    <pd:startX>126</pd:startX>
+    <pd:startY>105</pd:startY>
+    <pd:returnBindings>
+        <pfx3:CopyUser2ToTargetFolderResponce>
+            <xsl:copy-of select="$Copyfiles/ns1:CpoyFileResponce/ns:Header"/>
+            <pfx3:Body>
+                <xsl:copy-of select="$Copyfiles/ns1:CpoyFileResponce/ns1:Body/ancestor-or-self::*/namespace::node()"/>
+                <xsl:copy-of select="$Copyfiles/ns1:CpoyFileResponce/ns1:Body/@*"/>
+                <xsl:copy-of select="$Copyfiles/ns1:CpoyFileResponce/ns1:Body/node()"/>
+            </pfx3:Body>
+        </pfx3:CopyUser2ToTargetFolderResponce>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType ref="pfx3:CopyUser2ToTargetFolderResponce"/>
+    <pd:endX>571</pd:endX>
+    <pd:endY>101</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1700921235106</pd:targetNamespace>
+    <pd:activity name="Copyfiles">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>355</pd:x>
+        <pd:y>102</pd:y>
+        <config>
+            <processName>/Processes/Services/SharedProcesses/Copyfiles.process</processName>
+        </config>
+        <pd:inputBindings>
+            <ns2:CopyFileRequest>
+                <xsl:copy-of select="$Start/pfx:CopyUser2ToTargetFolderRequest/ns:Header"/>
+                <ns2:Body>
+                    <ns2:Source>
+                        <ns2:sourceDirectoryPath>
+                            <xsl:value-of select="$Start/pfx:CopyUser2ToTargetFolderRequest/pfx:Body/pfx:Source/pfx:sourceDirectoryPath"/>
+                        </ns2:sourceDirectoryPath>
+                        <ns2:sourceFileName>
+                            <xsl:value-of select="$Start/pfx:CopyUser2ToTargetFolderRequest/pfx:Body/pfx:Source/pfx:sourceFileName"/>
+                        </ns2:sourceFileName>
+                    </ns2:Source>
+                    <ns2:targer>
+                        <ns2:targetDirectoryPath>
+                            <xsl:value-of select="$Start/pfx:CopyUser2ToTargetFolderRequest/pfx:Body/pfx:target/pfx:targetDirectoryPath"/>
+                        </ns2:targetDirectoryPath>
+                        <ns2:targetFileName>
+                            <xsl:value-of select="$Start/pfx:CopyUser2ToTargetFolderRequest/pfx:Body/pfx:target/pfx:targetFileName"/>
+                        </ns2:targetFileName>
+                    </ns2:targer>
+                </ns2:Body>
+            </ns2:CopyFileRequest>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Copyfiles</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Copyfiles</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
